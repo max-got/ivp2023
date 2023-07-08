@@ -333,27 +333,126 @@
         }
       }
     },
-    "/api/rooms/roomType/{roomType}": {
+    "/api/hotels/": {
       "get": {
         "tags": [
-          "Rooms"
+          "Hotels"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/{id}": {
+      "get": {
+        "tags": [
+          "Hotels"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "roomType",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/name/{name}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/city/{city}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/city/{city}/hotel/id/{id}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "city",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "startDate",
-            "in": "query",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/city/{city}/hotel/name/{name}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "path",
+            "required": true,
             "type": "string"
           },
           {
-            "name": "endDate",
-            "in": "query",
+            "name": "name",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
