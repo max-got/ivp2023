@@ -30,12 +30,13 @@ export const get_all_rooms = async (req: Request, res: Response, next: NextFunct
 			endDate as string
 		);
 
-		if (!rooms) {
+		if (!rooms || rooms.length === 0) {
 			throw new ResponseError('Keine Zimmer gefunden', 404);
 		}
 
 		res.json(rooms);
 	} catch (error) {
+		console.log(error);
 		next(error);
 	}
 };
@@ -84,7 +85,7 @@ export const get_rooms_by_hotel_id = async (req: Request, res: Response, next: N
 			endDate as string
 		);
 
-		if (rooms.length === 0) {
+		if (!rooms || rooms.length === 0) {
 			throw new ResponseError('Keine Zimmer gefunden', 404);
 		}
 
