@@ -19,7 +19,7 @@ export function zodMiddlewareValidator(schema: ZodExpressRequest) {
 		} = {
 			body: null,
 			query: null,
-			params: null,
+			params: null
 		};
 
 		if (schema.body) {
@@ -59,7 +59,7 @@ export function zodMiddlewareValidator(schema: ZodExpressRequest) {
 
 		if (parsing_errors.body || parsing_errors.query || parsing_errors.params) {
 			return res.status(400).json({
-				errors: parsing_errors,
+				errors: parsing_errors
 			});
 		}
 		const processed = processRequest(schema);
