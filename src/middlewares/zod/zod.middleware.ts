@@ -1,13 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { UnknownKeysParam, z } from 'zod';
+import { z } from 'zod';
 import { processRequest } from 'zod-express-middleware';
 
-type ZodObject = z.ZodObject<z.ZodRawShape, UnknownKeysParam>;
-type ZodEffect = z.ZodEffects<ZodObject>;
 type ZodExpressRequest = {
-	body?: ZodObject | ZodEffect;
-	query?: ZodObject | ZodEffect;
-	params?: ZodObject | ZodEffect;
+	body?: z.ZodTypeAny;
+	query?: z.ZodTypeAny;
+	params?: z.ZodTypeAny;
 };
 
 export function zodMiddlewareValidator(schema: ZodExpressRequest) {
