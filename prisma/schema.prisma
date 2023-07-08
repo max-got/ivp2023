@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:postgres@localhost:5432/mydb"
+}
+
+model Booking {
+  id               Int        @id @default(autoincrement())
+  bookingStartDate DateTime
+  bookingEndDate   DateTime
+  roomId           Int?
+  room             Room?      @relation(fields: [roomId], references: [id])
+  trainId          Int?
+  train            Train?     @relation(fields: [trainId], references: [id])
+  carRentalId      Int?
+  carRental        CarRental? @relation(fields: [carRentalId], references: [id])
+  packageId        Int?
+  package          Package?   @relation(fields: [packageId], references: [id])
+  customerId       Int
+  customer         Customer   @relation(fields: [customerId], references: [id])
+  invoices         Invoice[]
+}
+
+model City {
+  id       Int       @id @default(autoincrement())
+  name     String
+  packages Package[]
+  hotels   Hotel[]
+}
+
+model Hotel {
+  id      Int    @id @default(autoincrement())
+  name    String
+  address String
+  cityId  Int
+  taxId   String
+  city    City   @relation(fields: [cityId], references: [id])
+  rooms   Room[]
+}
+
+model Room {
+  id       Int       @id @default(autoincrement())
+  roomType RoomType
+  price    Float
+  currency String
+  number   Int
+  hotelId  Int
+  hotel    Hotel     @relation(fields: [hotelId], references: [id])
+  bookings Booking[]
+}
+
+model Customer {
+  id       Int       @id @default(autoincrement())
+  name     String
+  email    String
+  address  String
+  bookings Booking[]
+}
+
+model Provider {
+  id       Int       @id @default(autoincrement())
+  name     String
+  address  String
+  taxId    String
+  packages Package[]
+  invoices Invoice[]
+}
+
+model Package {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  currency    String
+  provider    Provider  @relation(fields: [providerId], references: [id])
+  providerId  Int
+  cities      City[]
+  bookings    Booking[]
+}
+
+model Train {
+  id          Int       @id @default(autoincrement())
+  departure   String
+  destination String
+  class       String
+  bookings    Booking[]
+}
+
+model CarRental {
+  id          Int       @id @default(autoincrement())
+  location    String
+  vehicleType String
+  bookings    Booking[]
+}
+
+model Invoice {
+  id         Int      @id @default(autoincrement())
+  paid       Boolean  @default(false)
+  currency   String
+  bookingId  Int
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  providerId Int
+  provider   Provider @relation(fields: [providerId], references: [id])
+  amount     Float
+  issuedAt   DateTime @default(now())
+  number     Int
+}
+
+enum RoomType {
+  single
+  double
+  suite
+}
