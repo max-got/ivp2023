@@ -1,22 +1,27 @@
 import { NextFunction, Request, Response } from 'express';
-import { UnknownKeysParam, z } from 'zod';
+import { z } from 'zod';
 import { processRequest } from 'zod-express-middleware';
 
-type ZodObject = z.ZodObject<z.ZodRawShape, UnknownKeysParam>;
-type ZodEffect = z.ZodEffects<ZodObject>;
 type ZodExpressRequest = {
-	body?: ZodObject | ZodEffect;
-	query?: ZodObject | ZodEffect;
-	params?: ZodObject | ZodEffect;
+	body?: z.ZodTypeAny;
+	query?: z.ZodTypeAny;
+	params?: z.ZodTypeAny;
+};
+
+interface ParsingError {
+	fields: string;
+	message: string;
+}
+
+type ParsingErrorResponse = {
+	body: ParsingError[] | null;
+	query: ParsingError[] | null;
+	params: ParsingError[] | null;
 };
 
 export function zodMiddlewareValidator(schema: ZodExpressRequest) {
 	return (req: Request, res: Response, next: NextFunction) => {
-		const parsing_errors: {
-			body: { field: string; message: string }[] | null;
-			query: { field: string; message: string }[] | null;
-			params: { field: string; message: string }[] | null;
-		} = {
+		const parsing_errors: ParsingErrorResponse = {
 			body: null,
 			query: null,
 			params: null
@@ -26,8 +31,8 @@ export function zodMiddlewareValidator(schema: ZodExpressRequest) {
 			const parsed_body = schema.body.safeParse(req.body);
 			if (!parsed_body.success) {
 				const errors = parsed_body.error.issues.map((issue) => {
-					const path = issue.path.join('.');
-					return { field: path, message: issue.message };
+					const path = issue.path.join(', ');
+					return { fields: path, message: issue.message };
 				});
 				parsing_errors.body = errors;
 			}
@@ -36,8 +41,8 @@ export function zodMiddlewareValidator(schema: ZodExpressRequest) {
 			const parsed_query = schema.query.safeParse(req.query);
 			if (!parsed_query.success) {
 				const errors = parsed_query.error.issues.map((issue) => {
-					const path = issue.path.join('.');
-					return { field: path, message: issue.message };
+					const path = issue.path.join(', ');
+					return { fields: path, message: issue.message };
 				});
 
 				parsing_errors.query = errors;
@@ -49,8 +54,8 @@ export function zodMiddlewareValidator(schema: ZodExpressRequest) {
 			const parsed_params = schema.params.safeParse(req.params);
 			if (!parsed_params.success) {
 				const errors = parsed_params.error.issues.map((issue) => {
-					const path = issue.path.join('.');
-					return { field: path, message: issue.message };
+					const path = issue.path.join(', ');
+					return { fields: path, message: issue.message };
 				});
 
 				parsing_errors.params = errors;
