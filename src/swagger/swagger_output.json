@@ -363,6 +363,19 @@
           }
         }
       }
+    },
+    "/api/hotels/": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   }
 }
