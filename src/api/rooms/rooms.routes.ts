@@ -23,12 +23,6 @@ rooms_routes.get(
 	zodMiddlewareValidator({ query: dateQuerySchema, params: idParamSchema }),
 	(req, res, next) => rooms_controller.get_rooms_by_hotel_id(req, res, next)
 );
-// Get Rooms by Hotel id
-rooms_routes.get(
-	'/hotel/id/:id',
-	zodMiddlewareValidator({ query: dateQuerySchema, params: idParamSchema }),
-	(req, res, next) => rooms_controller.get_rooms_by_hotel_id(req, res, next)
-);
 
 // Get Rooms by Hotel name
 rooms_routes.get(
@@ -39,13 +33,6 @@ rooms_routes.get(
 // Get Rooms by City id
 rooms_routes.get(
 	'/city/:id',
-	zodMiddlewareValidator({ query: dateQuerySchema, params: idParamSchema }),
-	(req, res, next) => rooms_controller.get_rooms_by_city_id(req, res, next)
-);
-
-// Get Rooms by City id
-rooms_routes.get(
-	'/city/id/:id',
 	zodMiddlewareValidator({ query: dateQuerySchema, params: idParamSchema }),
 	(req, res, next) => rooms_controller.get_rooms_by_city_id(req, res, next)
 );
