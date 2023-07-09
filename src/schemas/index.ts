@@ -29,6 +29,14 @@ export const dateQuerySchema = z
 				path: ['startDate']
 			});
 		}
+
+		if (val.startDate && val.endDate && val.startDate > val.endDate) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'startDate must be before endDate',
+				path: ['startDate', 'endDate']
+			});
+		}
 	});
 
 export type DateQuerySchema = z.infer<typeof dateQuerySchema>;
