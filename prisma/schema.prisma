@@ -11,20 +11,20 @@ datasource db {
 }
 
 model Booking {
-  id               Int        @id @default(autoincrement())
-  bookingStartDate DateTime
-  bookingEndDate   DateTime
-  roomId           Int?
-  room             Room?      @relation(fields: [roomId], references: [id])
-  trainId          Int?
-  train            Train?     @relation(fields: [trainId], references: [id])
-  carRentalId      Int?
-  carRental        CarRental? @relation(fields: [carRentalId], references: [id])
-  packageId        Int?
-  package          Package?   @relation(fields: [packageId], references: [id])
-  customerId       Int
-  customer         Customer   @relation(fields: [customerId], references: [id])
-  invoices         Invoice[]
+  id          Int        @id @default(autoincrement())
+  startDate   DateTime
+  endDate     DateTime
+  roomId      Int?
+  room        Room?      @relation(fields: [roomId], references: [id])
+  trainId     Int?
+  train       Train?     @relation(fields: [trainId], references: [id])
+  carRentalId Int?
+  carRental   CarRental? @relation(fields: [carRentalId], references: [id])
+  packageId   Int?
+  package     Package?   @relation(fields: [packageId], references: [id])
+  customerId  Int
+  customer    Customer   @relation(fields: [customerId], references: [id])
+  invoices    Invoice[]
 }
 
 model City {
