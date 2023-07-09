@@ -3,14 +3,7 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-const STAEDTE = [
-	'Berlin',
-	'Hamburg',
-	'München',
-	'Köln',
-	'Frankfurt',
-	'Stuttgart',
-] as const;
+const STAEDTE = ['Berlin', 'Hamburg', 'München', 'Köln', 'Frankfurt', 'Stuttgart'] as const;
 
 const ROOM_TYPES = ['single', 'double', 'suite'] as const;
 
@@ -18,28 +11,22 @@ type StadtSeed = Prisma.CityUncheckedCreateInput;
 const create_stadt = async ({ name, id }: StadtSeed) => {
 	const data = await prisma.city.upsert({
 		where: {
-			id: id,
+			id: id
 		},
 		update: {},
 		create: {
-			name: name,
-		},
+			name: name
+		}
 	});
 
 	return data;
 };
 
 type HotelSeed = Prisma.HotelUncheckedCreateInput;
-const create_hotel = async ({
-	name,
-	id,
-	cityId,
-	taxId,
-	address,
-}: HotelSeed) => {
+const create_hotel = async ({ name, id, cityId, taxId, address }: HotelSeed) => {
 	const data = await prisma.hotel.upsert({
 		where: {
-			id: id,
+			id: id
 		},
 		update: {},
 		create: {
@@ -48,27 +35,20 @@ const create_hotel = async ({
 			taxId,
 			city: {
 				connect: {
-					id: cityId,
-				},
-			},
-		},
+					id: cityId
+				}
+			}
+		}
 	});
 
 	return data;
 };
 
 type RoomSeed = Prisma.RoomUncheckedCreateInput;
-const create_room = async ({
-	id,
-	hotelId,
-	number,
-	roomType,
-	price,
-	currency,
-}: RoomSeed) => {
+const create_room = async ({ id, hotelId, number, roomType, price, currency }: RoomSeed) => {
 	const data = await prisma.room.upsert({
 		where: {
-			id: id,
+			id: id
 		},
 		update: {},
 		create: {
@@ -78,10 +58,10 @@ const create_room = async ({
 			currency: currency,
 			hotel: {
 				connect: {
-					id: hotelId,
-				},
-			},
-		},
+					id: hotelId
+				}
+			}
+		}
 	});
 
 	return data;
@@ -91,14 +71,14 @@ type CustomerSeed = Prisma.CustomerUncheckedCreateInput;
 const create_customer = async ({ id, name, email, address }: CustomerSeed) => {
 	const data = await prisma.customer.upsert({
 		where: {
-			id: id,
+			id: id
 		},
 		update: {},
 		create: {
 			name: name,
 			email: email,
-			address: address,
-		},
+			address: address
+		}
 	});
 
 	return data;
@@ -108,14 +88,14 @@ type ProviderSeed = Prisma.ProviderUncheckedCreateInput;
 const create_provider = async ({ id, name, address, taxId }: ProviderSeed) => {
 	const data = await prisma.provider.upsert({
 		where: {
-			id: id,
+			id: id
 		},
 		update: {},
 		create: {
 			name: name,
 			address: address,
-			taxId: taxId,
-		},
+			taxId: taxId
+		}
 	});
 
 	return data;
@@ -132,11 +112,11 @@ const create_package = async ({
 	price,
 	currency,
 	providerId,
-	city_id,
+	city_id
 }: PackageSeed) => {
 	const data = await prisma.package.upsert({
 		where: {
-			id: id,
+			id: id
 		},
 		update: {},
 		create: {
@@ -146,15 +126,15 @@ const create_package = async ({
 			currency: currency,
 			provider: {
 				connect: {
-					id: providerId,
-				},
+					id: providerId
+				}
 			},
 			cities: {
 				connect: {
-					id: city_id,
-				},
-			},
-		},
+					id: city_id
+				}
+			}
+		}
 	});
 
 	return data;
@@ -163,30 +143,30 @@ const create_package = async ({
 type BookingSeed = Prisma.BookingUncheckedCreateInput;
 const create_booking = async ({
 	id,
-	bookingStartDate,
-	bookingEndDate,
+	startDate,
+	endDate,
 	customerId,
 	roomId,
-	packageId,
+	packageId
 }: BookingSeed) => {
 	const between_dates = faker.date.betweens({
-		from: bookingStartDate,
-		to: bookingEndDate,
-		count: 2,
+		from: startDate,
+		to: endDate,
+		count: 2
 	});
 
 	const data = await prisma.booking.upsert({
 		where: {
-			id: id,
+			id: id
 		},
 		update: {},
 		create: {
-			bookingStartDate: between_dates[0],
-			bookingEndDate: between_dates[1],
+			startDate: between_dates[0],
+			endDate: between_dates[1],
 			customerId: customerId,
 			roomId: roomId,
-			packageId: packageId,
-		},
+			packageId: packageId
+		}
 	});
 
 	return data;
@@ -208,7 +188,7 @@ async function main() {
 			address: faker.location.streetAddress(),
 			taxId: faker.finance.routingNumber(),
 			id: i + 1,
-			cityId: created_stadt.id,
+			cityId: created_stadt.id
 		});
 
 		if (created_hotel) {
@@ -222,7 +202,7 @@ async function main() {
 			number: i + 1,
 			roomType: ROOM_TYPES[Math.floor(Math.random() * ROOM_TYPES.length)],
 			price: faker.number.float({ min: 50, max: 500, precision: 0.01 }),
-			currency: 'EUR',
+			currency: 'EUR'
 		});
 
 		if (created_room) {
@@ -234,7 +214,7 @@ async function main() {
 			name: faker.person.fullName(),
 			address: faker.location.streetAddress(),
 			email: faker.internet.email(),
-			id: i + 1,
+			id: i + 1
 		});
 
 		if (created_customer) {
@@ -246,7 +226,7 @@ async function main() {
 			id: i + 1,
 			name: faker.company.name(),
 			address: faker.location.streetAddress(),
-			taxId: faker.finance.routingNumber(),
+			taxId: faker.finance.routingNumber()
 		});
 
 		if (created_provider) {
@@ -261,11 +241,11 @@ async function main() {
 			price: faker.number.float({
 				min: 15,
 				max: 200,
-				precision: 0.01,
+				precision: 0.01
 			}),
 			currency: 'EUR',
 			city_id: created_stadt.id,
-			providerId: created_provider.id,
+			providerId: created_provider.id
 		});
 
 		if (created_package) {
@@ -275,11 +255,11 @@ async function main() {
 		// Erstellen von Testdaten für Buchungen
 		const created_booking = await create_booking({
 			id: i + 1,
-			bookingStartDate: faker.date.soon(),
-			bookingEndDate: faker.date.future(),
+			startDate: faker.date.soon(),
+			endDate: faker.date.future(),
 			customerId: created_customer.id,
 			roomId: created_room.id,
-			packageId: created_package.id,
+			packageId: created_package.id
 		});
 
 		if (created_booking) {

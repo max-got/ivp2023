@@ -9,8 +9,10 @@ import { idParamSchema } from './hotels.zod';
 hotels_routes.get('/', (req, res, next) => hotels_controller.get_all_hotels(req, res, next));
 
 // Get Hotel by id
-hotels_routes.get('/:id', zodMiddlewareValidator({ params: idParamSchema }), (req, res, next) =>
-	hotels_controller.get_hotel_by_id(req, res, next)
+hotels_routes.get(
+	'/:id',
+	zodMiddlewareValidator({ paramsSchema: idParamSchema }),
+	(req, res, next) => hotels_controller.get_hotel_by_id(req, res, next)
 );
 
 // Get Hotel by Name
@@ -26,7 +28,7 @@ hotels_routes.get('/city/:city', (req, res, next) =>
 // Get Hotel by city and hotel
 hotels_routes.get(
 	'/city/:city/hotel/id/:id',
-	zodMiddlewareValidator({ params: idParamSchema }),
+	zodMiddlewareValidator({ paramsSchema: idParamSchema }),
 	(req, res, next) => hotels_controller.get_hotel_by_city_and_id(req, res, next)
 );
 

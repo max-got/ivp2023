@@ -31,8 +31,7 @@ export const extendedPrisma = prisma.$extends({
 				//add fiel "isAvailable" to each room if it is available in the given date range
 				const roomsWithAvailability = rooms.map((room) => {
 					const isAvailable = bookings.every(
-						(booking) =>
-							booking.bookingStartDate > endDateObject || booking.bookingEndDate < startDateObject
+						(booking) => booking.startDate > endDateObject || booking.endDate < startDateObject
 					);
 					return { ...room, isAvailable };
 				});
@@ -69,8 +68,7 @@ export const extendedPrisma = prisma.$extends({
 				const roomWithAvailability = {
 					...room,
 					isAvailable: bookings.every(
-						(booking) =>
-							booking.bookingStartDate > endDateObject || booking.bookingEndDate < startDateObject
+						(booking) => booking.startDate > endDateObject || booking.endDate < startDateObject
 					)
 				};
 
