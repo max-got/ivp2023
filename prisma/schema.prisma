@@ -25,6 +25,12 @@ model Booking {
   customerId  Int
   customer    Customer   @relation(fields: [customerId], references: [id])
   invoices    Invoice[]
+
+  @@unique([roomId, startDate, endDate])
+  @@unique([trainId, startDate, endDate])
+  @@unique([carRentalId, startDate, endDate])
+  @@unique([packageId, startDate, endDate])
+  @@index([customerId])
 }
 
 model City {
@@ -32,6 +38,8 @@ model City {
   name     String
   packages Package[]
   hotels   Hotel[]
+
+  @@unique([name])
 }
 
 model Hotel {
@@ -42,6 +50,8 @@ model Hotel {
   taxId   String
   city    City   @relation(fields: [cityId], references: [id])
   rooms   Room[]
+
+  @@unique([name, cityId, address])
 }
 
 model Room {
@@ -53,6 +63,8 @@ model Room {
   hotelId  Int
   hotel    Hotel     @relation(fields: [hotelId], references: [id])
   bookings Booking[]
+
+  @@unique([number, hotelId])
 }
 
 model Customer {
@@ -61,6 +73,9 @@ model Customer {
   email    String
   address  String
   bookings Booking[]
+
+  @@unique([email])
+  @@index([name])
 }
 
 model Provider {
@@ -70,6 +85,8 @@ model Provider {
   taxId    String
   packages Package[]
   invoices Invoice[]
+
+  @@unique([name, taxId])
 }
 
 model Package {
@@ -82,6 +99,8 @@ model Package {
   providerId  Int
   cities      City[]
   bookings    Booking[]
+
+  @@unique([name, providerId])
 }
 
 model Train {
@@ -110,6 +129,9 @@ model Invoice {
   amount     Float
   issuedAt   DateTime @default(now())
   number     Int
+
+  @@unique([number, providerId])
+  @@index([bookingId])
 }
 
 enum RoomType {
