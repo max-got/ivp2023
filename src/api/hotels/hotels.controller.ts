@@ -83,12 +83,36 @@ export const get_hotel_by_name = async (req: Request, res: Response, next: NextF
 //Get Hotel by city
 export const get_hotel_by_city = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { city } = req.params;
+		const { cityId } = req.params;
 
 		const hotel = await prisma.hotel.findMany({
 			where: {
 				city: {
-					name: city
+					id: Number(cityId)
+				}
+			},
+			include: { ...INCLUDE_STATEMENT }
+		});
+
+		if (!hotel || hotel.length === 0) {
+			throw new ResponseError('Hotel nicht gefunden', 404);
+		}
+
+		res.json(hotel);
+	} catch (error) {
+		next(error);
+	}
+};
+
+// Get Hotel by city name
+export const get_hotel_by_city_name = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const { cityName } = req.params;
+
+		const hotel = await prisma.hotel.findMany({
+			where: {
+				city: {
+					name: cityName
 				}
 			},
 			include: { ...INCLUDE_STATEMENT }
