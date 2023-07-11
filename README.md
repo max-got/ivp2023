@@ -26,9 +26,16 @@ erstellt.
 ## Anleitung - Wie kann ich die Daten in [Insomnia](https://insomnia.rest/) importieren?
 
 1. Stoppe die API, falls diese noch läuft (Strg + C in der Kommandozeile, in der die API läuft)
-2. Öffne Insomnia und navigiere zu und suche nach dem Menüpunkt "Insomnia" -> "Preferences" -> "Data" -> "Import to the Project" -> "From File"
-3. Wähle die Datei `swagger_output.json` aus dem Projektordner aus, diese befindet sich im Ordner `src/swagger/`
-4. Nach dem Importieren solltest du mehrere Ordner in Insomnia sehen, diese Ordner entsprechen den verschiedenen Endpunkten der API. ACHTUNG: du musst die environment variables noch anpassen, damit die API funktioniert. Dafür musst du die Variable `base_url` auf `http://localhost:4000` setzen. Unter folgendem Link findest du eine Anleitung, wie du die environment variables anpassen kannst: [https://docs.insomnia.rest/insomnia/environment-variables](https://docs.insomnia.rest/insomnia/environment-variables)
+2. Öffne die Kommandozeile in VSCode und starte den Befeghl `npm run generate:swagger`
+3. Öffne Insomnia und navigiere zu und suche nach dem Menüpunkt "Insomnia" -> "Preferences" -> "Data" -> "Import to the Project" -> "From File"
+4. Wähle die Datei `swagger_output.json` aus dem Projektordner aus, diese befindet sich im Ordner `src/swagger/`
+5. Nach dem Importieren solltest du mehrere Ordner in Insomnia sehen, diese Ordner entsprechen den verschiedenen Endpunkten der API. ACHTUNG: du musst die environment variables noch anpassen, damit die API funktioniert. Dafür musst du die Variable `base_url` auf `http://localhost:4000` setzen. Unter folgendem Link findest du eine Anleitung, wie du die environment variables anpassen kannst: [https://docs.insomnia.rest/insomnia/environment-variables](https://docs.insomnia.rest/insomnia/environment-variables)
+6. Starte die API wie in Schritt 11 der obigen Anleitung beschrieben und teste die API in Insomnia
+
+## Anleitung - Wie kann ich die Daten in der Datenbank sehen/ändern?
+
+1. Öffne ein neues Terminal in VSCode (Terminal -> New Terminal) und führe folgenden Befehl aus, um die Daten in der Datenbank zu sehen und zu ändern `npx prisma studio`
+2. Öffne einen Browser und navigiere zu `http://localhost:5555/`, jetzt solltest du die Daten in der Datenbank sehen und ändern können.
 
 ## Anleitung - Wie kann ich das Repository aktualisieren?
 
