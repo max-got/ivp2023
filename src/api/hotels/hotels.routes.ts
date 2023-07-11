@@ -20,9 +20,14 @@ hotels_routes.get('/name/:name', (req, res, next) =>
 	hotels_controller.get_hotel_by_name(req, res, next)
 );
 
-// Get Hotel by city
-hotels_routes.get('/city/:city', (req, res, next) =>
+// Get Hotel by city Id
+hotels_routes.get('/city/:cityId', (req, res, next) =>
 	hotels_controller.get_hotel_by_city(req, res, next)
+);
+
+// Get Hotel by city name
+hotels_routes.get('/city/name/:cityName', (req, res, next) =>
+	hotels_controller.get_hotel_by_city_name(req, res, next)
 );
 
 // Get Hotel by city and hotel
