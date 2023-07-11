@@ -3,7 +3,15 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-const STAEDTE = ['Berlin', 'Hamburg', 'München', 'Köln', 'Frankfurt', 'Stuttgart'] as const;
+const STAEDTE = [
+	'Berlin',
+	'Hamburg',
+	'München',
+	'Köln',
+	'Frankfurt',
+	'Stuttgart',
+	'Potsdam'
+] as const;
 
 const ROOM_TYPES = ['single', 'double', 'suite'] as const;
 
@@ -149,20 +157,14 @@ const create_booking = async ({
 	roomId,
 	packageId
 }: BookingSeed) => {
-	const between_dates = faker.date.betweens({
-		from: startDate,
-		to: endDate,
-		count: 2
-	});
-
 	const data = await prisma.booking.upsert({
 		where: {
 			id: id
 		},
 		update: {},
 		create: {
-			startDate: between_dates[0],
-			endDate: between_dates[1],
+			startDate: startDate,
+			endDate: endDate,
 			customerId: customerId,
 			roomId: roomId,
 			packageId: packageId
@@ -173,14 +175,28 @@ const create_booking = async ({
 };
 
 async function main() {
+	console.log(`Start seeding ..., one moment please`);
+	console.log(`Seeding ...`);
 	// Erstellen von Testdaten für Städte
+	const created_staedte: Prisma.CityUncheckedCreateInput[] = [];
 	for (let i = 0; i < STAEDTE.length; i++) {
 		const stadt = STAEDTE[i];
 		const created_stadt = await create_stadt({ name: stadt, id: i + 1 });
 
+		created_staedte.push(created_stadt);
+
 		if (created_stadt) {
-			console.log(`Created stadt with id: ${created_stadt.id}`);
+			console.log(`Created stadt with id: ${created_stadt.id} (${created_stadt.name})`);
 		}
+	}
+	console.log(`Created ${created_staedte.length} staedte`);
+	console.log(`\nstill Seeding ...`);
+
+	for (let i = 0; i < 200; i++) {
+		const stadt = STAEDTE[Math.floor(Math.random() * STAEDTE.length)];
+		const created_stadt = created_staedte.find(
+			(s) => s.name === stadt
+		) as Prisma.CityUncheckedCreateInput;
 
 		// Erstellen von Testdaten für Hotels
 		const created_hotel = await create_hotel({
@@ -188,26 +204,19 @@ async function main() {
 			address: faker.location.streetAddress(),
 			taxId: faker.finance.routingNumber(),
 			id: i + 1,
-			cityId: created_stadt.id
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			cityId: created_stadt.id!
 		});
-
-		if (created_hotel) {
-			console.log(`Created hotel with id: ${created_hotel.id}`);
-		}
 
 		// Erstellen von Testdaten für Zimmer
 		const created_room = await create_room({
 			id: i + 1,
 			hotelId: created_hotel.id,
-			number: i + 1,
+			number: faker.number.int({ min: 50, max: 999 }),
 			roomType: ROOM_TYPES[Math.floor(Math.random() * ROOM_TYPES.length)],
 			price: faker.number.float({ min: 50, max: 500, precision: 0.01 }),
 			currency: 'EUR'
 		});
-
-		if (created_room) {
-			console.log(`Created room with id: ${created_hotel.id}`);
-		}
 
 		// Erstellen von Testdaten für Kunden
 		const created_customer = await create_customer({
@@ -217,10 +226,6 @@ async function main() {
 			id: i + 1
 		});
 
-		if (created_customer) {
-			console.log(`Created customer with id: ${created_customer.id}`);
-		}
-
 		//Erstellen von Testdaten für Providers
 		const created_provider = await create_provider({
 			id: i + 1,
@@ -228,10 +233,6 @@ async function main() {
 			address: faker.location.streetAddress(),
 			taxId: faker.finance.routingNumber()
 		});
-
-		if (created_provider) {
-			console.log(`Created provider with id: ${created_provider.id}`);
-		}
 
 		//Erstellen von Testdaten für Packages
 		const created_package = await create_package({
@@ -244,35 +245,33 @@ async function main() {
 				precision: 0.01
 			}),
 			currency: 'EUR',
-			city_id: created_stadt.id,
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			city_id: created_stadt.id!,
 			providerId: created_provider.id
 		});
 
-		if (created_package) {
-			console.log(`Created package with id: ${created_package.id}`);
-		}
-
 		// Erstellen von Testdaten für Buchungen
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const created_booking = await create_booking({
 			id: i + 1,
-			startDate: faker.date.soon(),
-			endDate: faker.date.future(),
+			startDate: faker.date.past({ refDate: new Date() }),
+			endDate: faker.date.soon({ refDate: new Date() }),
 			customerId: created_customer.id,
 			roomId: created_room.id,
 			packageId: created_package.id
 		});
-
-		if (created_booking) {
-			console.log(`Created booking with id: ${created_booking.id}`);
-		}
 	}
-
-	console.log('Seed data created successfully');
 }
 
 main()
 	.then(async () => {
 		await prisma.$disconnect();
+		console.log('\n\nDisconnected from database');
+		console.log('\x1b[32mCreated Data for Testing successfully!!\x1b[0m');
+		console.log('\x1b[32mYou can now start the server with `npm run dev`\x1b[0m');
+		console.log(
+			'If you want to see the data in the database, open a new terminal and run the following command:\n\x1b[36mnpx prisma studio\x1b[0m \n\n'
+		);
 	})
 
 	.catch(async (e) => {
