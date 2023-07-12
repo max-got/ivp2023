@@ -13,7 +13,7 @@ erstellt.
 6. Führe folgenden Befehl aus, um die Abhängigkeiten zu installieren `npm install`
 7. Starte die Docker Engine, falls diese noch nicht läuft.
 8. Führe folgenden Befehl aus, um die Datenbank zu starten `docker-compose up`
-9. Führe folgenden Befehl aus, um das schema in der 'prisma/schema.prisma' Datei in die Datenbank zu übertragen `npx prisha db push --force-reset` (Dieser Befehl muss ausgeführt werden, wenn sich das Schema geändert hat)
+9. Führe folgenden Befehl aus, um das schema in der 'prisma/schema.prisma' Datei in die Datenbank zu übertragen `npx prisma db push --force-reset` (Dieser Befehl muss ausgeführt werden, wenn sich das Schema geändert hat)
 10. Führe folgenden Befehl aus, um die die Datenbank mit den Testdaten zu füllen `npx prisma db seed` (Dieser Befehl muss ausgeführt werden, wenn du den Befehl in Schritt 9 ausgeführt hast!)
 11. Führe folgenden Befehl aus, um die API zu starten `npm run dev`
 12. Öffne einen Browser und navigiere zu `http://localhost:4000/health` um die API zu testen
