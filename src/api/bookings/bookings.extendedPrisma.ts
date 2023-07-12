@@ -1,5 +1,6 @@
 import { Prisma, RoomType } from '@prisma/client';
 import prisma from 'src/prisma/';
+import { ResponseError } from 'src/utils/errorHandler';
 
 interface StartDateEndDate {
 	startDate: Date;
@@ -50,6 +51,26 @@ interface FindManyCheckIfRoomsByCityIdAreAvailableArgs extends StartDateEndDate 
 interface FindManyCheckIfRoomsByCityNameAreAvailableArgs extends StartDateEndDate {
 	cityName: string;
 }
+
+interface CreateBookingSingleRoomByIdArgsCustomerId extends StartDateEndDate {
+	roomId: number;
+	customerId: number;
+	name: undefined;
+	email: undefined;
+	address: undefined;
+}
+
+interface CreateBookingSingleRoomByIdArgsNewCustomer extends StartDateEndDate {
+	roomId: number;
+	customerId: undefined;
+	name: string;
+	email: string;
+	address: string;
+}
+
+type CreateBookingSingleRoomByIdArgs =
+	| CreateBookingSingleRoomByIdArgsNewCustomer
+	| CreateBookingSingleRoomByIdArgsCustomerId;
 
 export const extendedPrisma = prisma.$extends({
 	name: 'bookings',
@@ -177,6 +198,90 @@ export const extendedPrisma = prisma.$extends({
 				}
 
 				return bookings;
+			},
+
+			createBookingSingleRoomById: async ({
+				endDate,
+				startDate,
+				roomId,
+				customerId,
+				address,
+				name,
+				email
+			}: CreateBookingSingleRoomByIdArgs) => {
+				const room = await prisma.room.findUnique({
+					where: {
+						id: roomId
+					}
+				});
+
+				if (!room) {
+					throw new ResponseError('Room does not exist', 400);
+				}
+
+				//check if room is available
+
+				const check_if_booking_exists = (await prisma.$queryRaw`
+				SELECT * FROM "Booking"
+				WHERE "Booking"."roomId" = ${roomId}
+				AND "Booking"."startDate" <= ${endDate}
+				AND "Booking"."endDate" >= ${startDate}`) as string[];
+
+				if (check_if_booking_exists.length > 0)
+					throw new ResponseError('Room is not available for the given time period', 400);
+
+				//if the email is provided, check if the customer already exists
+				if (email) {
+					const customer = await prisma.customer.findUnique({
+						where: {
+							email: email || undefined
+						}
+					});
+
+					if (customer) {
+						throw new ResponseError('Customer already exists, please use customerId', 400);
+					}
+				}
+
+				//conditionally create a new customer or connect to an existing one
+				//sieht scheiße aus, aber funktioniert
+				const data = {
+					startDate: startDate,
+					endDate: endDate,
+					room: {
+						connect: {
+							id: roomId
+						}
+					},
+					...(customerId && {
+						customer: {
+							connect: {
+								id: customerId
+							}
+						}
+					}),
+					...(!customerId && {
+						customer: {
+							create: {
+								address: address,
+								email: email,
+								name: name
+							}
+						}
+					})
+				} as Prisma.BookingCreateInput;
+
+				//create the booking
+				const booking = await prisma.booking.create({
+					data: data
+				});
+
+				//schau ob irgendwas nicht klappt
+				if (!booking) {
+					throw new ResponseError('Booking could not be created', 500);
+				}
+
+				return booking;
 			}
 		}
 	}

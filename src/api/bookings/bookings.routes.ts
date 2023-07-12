@@ -9,7 +9,8 @@ import {
 	check_multiple_rooms_by_ids_query_schema,
 	check_multiple_rooms_by_roomType_query_schema,
 	roomTypeSchema,
-	check_multiple_rooms_by_cityId_query_schema
+	check_multiple_rooms_by_cityId_query_schema,
+	create_booking_single_room_schema_full
 } from './bookings.zod';
 import z from 'zod';
 
@@ -68,15 +69,17 @@ bookings_routes.get(
 	bookings_controller.check_multiple_rooms_by_cityName
 );
 
-// //Create Booking for single Room
-// bookings_routes.post(
-// 	'/rooms/:id',
-// 	zodMiddlewareValidator({
-// 		querySchema: dateQuerySchemaRequired,
-// 		paramsSchema: idParamSchema
-// 	}),
-// 	bookings_controller.create_booking_single_room
-// );
+//Create Booking for single Room
+bookings_routes.post(
+	'/rooms/:roomId',
+	zodMiddlewareValidator({
+		paramsSchema: z.object({
+			roomId: z.coerce.number().int().positive()
+		}),
+		bodySchema: create_booking_single_room_schema_full
+	}),
+	bookings_controller.create_booking_single_room
+);
 
 // //Create Booking for multiple Rooms
 // bookings_routes.post(
