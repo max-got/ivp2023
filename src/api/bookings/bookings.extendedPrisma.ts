@@ -1,6 +1,9 @@
 import { Prisma, RoomType } from '@prisma/client';
 import prisma from 'src/prisma/';
+
 import { ResponseError } from 'src/utils/errorHandler';
+
+
 
 interface StartDateEndDate {
 	startDate: Date;
@@ -52,6 +55,7 @@ interface FindManyCheckIfRoomsByCityNameAreAvailableArgs extends StartDateEndDat
 	cityName: string;
 }
 
+
 interface CreateBookingSingleRoomByIdArgsCustomerId extends StartDateEndDate {
 	roomId: number;
 	customerId: number;
@@ -71,6 +75,7 @@ interface CreateBookingSingleRoomByIdArgsNewCustomer extends StartDateEndDate {
 type CreateBookingSingleRoomByIdArgs =
 	| CreateBookingSingleRoomByIdArgsNewCustomer
 	| CreateBookingSingleRoomByIdArgsCustomerId;
+
 
 export const extendedPrisma = prisma.$extends({
 	name: 'bookings',
@@ -198,6 +203,7 @@ export const extendedPrisma = prisma.$extends({
 				}
 
 				return bookings;
+
 			},
 
 			createBookingSingleRoomById: async ({
@@ -282,6 +288,8 @@ export const extendedPrisma = prisma.$extends({
 				}
 
 				return booking;
+
+
 			}
 		}
 	}

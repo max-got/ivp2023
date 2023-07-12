@@ -77,6 +77,7 @@ export const check_multiple_rooms_by_cityId_query_schema = z
 		}
 	});
 
+
 export const create_booking_single_room_schema_full = z
 	.object({
 		customerId: z.coerce.number().int().positive().optional(),

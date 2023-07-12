@@ -235,6 +235,7 @@ export const check_multiple_rooms_by_cityName = async (
 	}
 };
 
+
 // Create a new Booking for a single Room
 export const create_booking_single_room = async (
 	req: Request,
@@ -260,3 +261,4 @@ export const create_booking_single_room = async (
 		next(error);
 	}
 };
+
