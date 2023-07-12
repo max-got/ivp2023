@@ -234,3 +234,29 @@ export const check_multiple_rooms_by_cityName = async (
 		next(error);
 	}
 };
+
+// Create a new Booking for a single Room
+export const create_booking_single_room = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { roomId } = req.params;
+		const { startDate, endDate, customerId, name, address, email } = req.body;
+
+		const data = {
+			roomId: Number(roomId),
+			startDate: new Date(startDate),
+			endDate: new Date(endDate),
+			...(customerId && { customerId: Number(customerId) }),
+			...(!customerId && { name: name, address: address, email: email })
+		};
+
+		const booking = await extendedPrisma.booking.createBookingSingleRoomById(data);
+
+		res.json(booking);
+	} catch (error) {
+		next(error);
+	}
+};

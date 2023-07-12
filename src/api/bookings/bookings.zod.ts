@@ -77,4 +77,31 @@ export const check_multiple_rooms_by_cityId_query_schema = z
 		}
 	});
 
+export const create_booking_single_room_schema_full = z
+	.object({
+		customerId: z.coerce.number().int().positive().optional(),
+		name: z.string().trim().nonempty().optional(),
+		email: z.string().trim().email().optional(),
+		address: z.string().trim().nonempty().optional(),
+		...dateQuerySchemaRequired.shape
+	})
+	.superRefine((val, ctx) => {
+		//customerId OR name AND email AND address are required
+		if (!val.customerId && !(val.name && val.email && val.address)) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'customerId OR name AND email AND address are required',
+				path: ['customerId', 'name', 'email', 'address']
+			});
+		}
+
+		if (val.startDate && val.endDate && val.startDate > val.endDate) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'startDate must be before endDate',
+				path: ['startDate', 'endDate']
+			});
+		}
+	});
+
 export { idParamSchema, roomTypeSchema };
