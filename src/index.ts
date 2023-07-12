@@ -3,9 +3,6 @@ import { ResponseError } from 'src/utils/errorHandler';
 
 import app from './routes';
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 const globalErrorHandler = (
 	err: Error,
 	_req: Request,
