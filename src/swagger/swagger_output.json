@@ -1,0 +1,691 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "IVP2023",
+    "description": "Documentation for the IVP2023 API"
+  },
+  "host": "localhost:4000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/rooms/": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/rooms/{id}": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/rooms/hotel/{id}": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/rooms/hotel/name/{name}": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/rooms/city/{id}": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/rooms/city/name/{name}": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/rooms/city/id/{city}/hotel/id/{hotel}": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "hotel",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/rooms/city/{city}/hotel/{hotel}": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "hotel",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/rooms/roomType/{roomType}": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "roomType",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/{id}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/name/{name}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/city/{cityId}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/city/name/{cityName}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "cityName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/city/{city}/hotel/id/{id}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/hotels/city/{city}/hotel/name/{name}": {
+      "get": {
+        "tags": [
+          "Hotels"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/bookings/rooms/{id}": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "description": "Check if single Room is available",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID des Raumes"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Startdatum der Buchung (Date)",
+            "required": true,
+            "type": "string",
+            "example": "2021-01-01"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Enddatum der Buchung (Date)",
+            "required": true,
+            "type": "string",
+            "example": "2021-02-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/bookings/rooms": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "description": "Check if multiple Rooms are available",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "description": "IDs der Räume (comma separated)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Startdatum der Buchung (Date)",
+            "required": true,
+            "type": "string",
+            "example": "2021-01-01"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Enddatum der Buchung (Date)",
+            "required": true,
+            "type": "string",
+            "example": "2021-02-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/bookings/rooms/roomType/{roomType}": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "description": "Check if multiple Rooms by roomType are available",
+        "parameters": [
+          {
+            "name": "roomType",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Raumtyp"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Startdatum der Buchung (Date)",
+            "required": true,
+            "type": "string",
+            "example": "2021-01-01"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Enddatum der Buchung (Date)",
+            "required": true,
+            "type": "string",
+            "example": "2021-02-01"
+          },
+          {
+            "name": "cityName",
+            "in": "query",
+            "description": "Name der Stadt",
+            "required": false,
+            "type": "string",
+            "example": "Berlin"
+          },
+          {
+            "name": "hotelName",
+            "in": "query",
+            "description": "Name des Hotels",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/bookings/rooms/city/name/{cityName}": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "description": "Check if multiple Rooms by city name are available",
+        "parameters": [
+          {
+            "name": "cityName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Name der Stadt"
+          },
+          {
+            "name": "roomType",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "hotelName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Startdatum der Buchung (Date)",
+            "required": true,
+            "type": "string",
+            "example": "2021-01-01"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Enddatum der Buchung (Date)",
+            "required": true,
+            "type": "string",
+            "example": "2021-02-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/bookings/rooms/{roomId}": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "roomId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID des Raumes"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Objekt mit den Daten der Buchung",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "example": "2021-01-01T00:00:00.000Z"
+                },
+                "endDate": {
+                  "type": "string",
+                  "example": "2021-02-01T00:00:00.000Z"
+                },
+                "customerId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Max Mustermann"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "max@mustermann.de"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "Musterstraße 1, 12345 Musterstadt"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}
