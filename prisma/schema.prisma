@@ -74,7 +74,6 @@ model Customer {
   address  String
   bookings Booking[]
 
-  @@unique([email])
   @@index([name])
 }
 

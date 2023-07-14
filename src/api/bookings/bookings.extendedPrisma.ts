@@ -143,7 +143,6 @@ export const extendedPrisma = prisma.$extends({
 				endDate,
 				startDate,
 				roomId,
-				customerId,
 				address,
 				name,
 				email
@@ -159,7 +158,6 @@ export const extendedPrisma = prisma.$extends({
 				}
 
 				//check if room is available
-
 				const check_if_booking_exists = (await prisma.$queryRaw`
 				SELECT * FROM "Booking"
 				WHERE "Booking"."roomId" = ${roomId}
@@ -170,16 +168,16 @@ export const extendedPrisma = prisma.$extends({
 					throw new ResponseError('Room is not available for the given time period', 400);
 
 				//if the email is provided, check if the customer already exists
-				if (email) {
-					const customer = await prisma.customer.findUnique({
-						where: {
-							email: email || undefined
-						}
-					});
-
-					if (customer) {
-						throw new ResponseError('Customer already exists, please use customerId', 400);
+				const customer = await prisma.customer.create({
+					data: {
+						name: name,
+						email: email,
+						address: address
 					}
+				});
+
+				if (!customer) {
+					throw new ResponseError('Customer could not be created', 500);
 				}
 
 				//conditionally create a new customer or connect to an existing one
@@ -192,22 +190,9 @@ export const extendedPrisma = prisma.$extends({
 							id: roomId
 						}
 					},
-					...(customerId && {
-						customer: {
-							connect: {
-								id: customerId
-							}
-						}
-					}),
-					...(!customerId && {
-						customer: {
-							create: {
-								address: address,
-								email: email,
-								name: name
-							}
-						}
-					})
+					customer: {
+						connect: customer
+					}
 				} as Prisma.BookingCreateInput;
 
 				//create the booking

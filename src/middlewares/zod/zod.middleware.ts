@@ -21,7 +21,9 @@ export function zodMiddlewareValidator({
 }: zodMiddlewareValidatorArgs = {}) {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const parsing_errors: ParsingErrorResponse = {};
-
+		console.log('Das sind die Anfragen Parameter ', req.params);
+		console.log('Das ist der Anfragen Body ', req.body);
+		console.log('Das ist der Anfragen Query ', req.query);
 		if (bodySchema) {
 			const parsed_body = bodySchema.safeParse(req.body);
 			if (!parsed_body.success) {
@@ -55,6 +57,13 @@ export function zodMiddlewareValidator({
 				parsing_errors.params = errors;
 			}
 		}
+		console.log(
+			parsing_errors.body || parsing_errors.query || parsing_errors.params
+				? `!Anfrage hat folgende Fehler: 
+
+				${JSON.stringify(parsing_errors, null, 2)}`
+				: '!Anfrage hat keine Fehler!'
+		);
 
 		if (parsing_errors.body || parsing_errors.query || parsing_errors.params) {
 			return res.status(400).json({

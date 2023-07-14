@@ -47,22 +47,9 @@ export interface FindManyRoomsByCitynameThatAreAvailableArgs extends StartDateEn
 	hotelName?: string;
 }
 
-export interface CreateBookingSingleRoomByIdArgsCustomerId extends StartDateEndDate {
+export interface CreateBookingSingleRoomByIdArgs extends StartDateEndDate {
 	roomId: number;
-	customerId: number;
-	name: undefined;
-	email: undefined;
-	address: undefined;
-}
-
-export interface CreateBookingSingleRoomByIdArgsNewCustomer extends StartDateEndDate {
-	roomId: number;
-	customerId: undefined;
 	name: string;
 	email: string;
 	address: string;
 }
-
-export type CreateBookingSingleRoomByIdArgs =
-	| CreateBookingSingleRoomByIdArgsNewCustomer
-	| CreateBookingSingleRoomByIdArgsCustomerId;

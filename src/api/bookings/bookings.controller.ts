@@ -102,20 +102,23 @@ export const createSingleRoomBookingById = async (
 ) => {
 	try {
 		const { roomId } = req.params;
-		const { startDate, endDate, customerId, name, address, email } = req.body;
+		const { startDate, endDate, name, address, email } = req.body;
 
 		const data = {
 			roomId: Number(roomId),
 			startDate: new Date(startDate),
 			endDate: new Date(endDate),
-			...(customerId && { customerId: Number(customerId) }),
-			...(!customerId && { name: name, address: address, email: email })
+			name: name,
+			address: address,
+			email: email
 		};
 
 		const booking = await extendedPrisma.booking.createSingleRoomBookingById(data);
+		console.log('-> Booking', booking);
 
 		res.json(booking);
 	} catch (error) {
+		console.log(error);
 		next(error);
 	}
 };
