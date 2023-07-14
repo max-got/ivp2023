@@ -3,15 +3,7 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-const STAEDTE = [
-	'Berlin',
-	'Hamburg',
-	'München',
-	'Köln',
-	'Frankfurt',
-	'Stuttgart',
-	'Potsdam'
-] as const;
+const STAEDTE = ['Berlin', 'Hamburg', 'Frankfurt', 'Stuttgart', 'Potsdam'] as const;
 
 const ROOM_TYPES = ['single', 'double', 'suite'] as const;
 

@@ -686,6 +686,32 @@
           }
         }
       }
+    },
+    "/api/cities/": {
+      "get": {
+        "tags": [
+          "Cities"
+        ],
+        "description": "Get all Cities",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/roomTypes/": {
+      "get": {
+        "tags": [
+          "RoomTypes"
+        ],
+        "description": "Get all RoomTypes",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   }
 }

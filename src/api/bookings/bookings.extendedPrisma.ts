@@ -32,7 +32,7 @@ export const extendedPrisma = prisma.$extends({
 
 				const bookings = (await prisma.$queryRaw`
 				SELECT
-				(SELECT JSON_BUILD_OBJECT('roomId', "Booking"."roomId", 'number', "Room"."number", 'roomType', "Room"."roomType" )) AS "room",
+				(SELECT JSON_BUILD_OBJECT('roomId', "Room"."id", 'number', "Room"."number", 'roomType', "Room"."roomType", 'price', "Room"."price")) AS "room",
 				(SELECT JSON_BUILD_OBJECT('hotelId', "Hotel"."id", 'hotelName', "Hotel"."name")) AS "hotel",
 				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city"
 				FROM "Booking"
@@ -59,7 +59,7 @@ export const extendedPrisma = prisma.$extends({
 				console.log(ids);
 				const bookings = (await prisma.$queryRaw`
 				SELECT
-				(SELECT JSON_BUILD_OBJECT('roomId', "Booking"."roomId", 'number', "Room"."number", 'roomType', "Room"."roomType" )) AS "room",
+				(SELECT JSON_BUILD_OBJECT('roomId', "Room"."id", 'number', "Room"."number", 'roomType', "Room"."roomType", 'price', "Room"."price")) AS "room",
 				(SELECT JSON_BUILD_OBJECT('hotelId', "Hotel"."id", 'hotelName', "Hotel"."name")) AS "hotel",
 				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city"
 				FROM "Booking"
@@ -87,7 +87,7 @@ export const extendedPrisma = prisma.$extends({
 				console.log(roomType, startDate, endDate, cityName, hotelName);
 				const bookings = (await prisma.$queryRaw`
 				SELECT
-				(SELECT JSON_BUILD_OBJECT('roomId', "Room"."id", 'number', "Room"."number", 'roomType', "Room"."roomType")) AS "room",
+				(SELECT JSON_BUILD_OBJECT('roomId', "Room"."id", 'number', "Room"."number", 'roomType', "Room"."roomType", 'price', "Room"."price")) AS "room",
 				(SELECT JSON_BUILD_OBJECT('hotelId', "Hotel"."id", 'hotelName', "Hotel"."name")) AS "hotel",
 				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name")) AS "city"
 				FROM "Room"
@@ -119,7 +119,7 @@ export const extendedPrisma = prisma.$extends({
 				console.log(cityName, startDate, endDate, hotelName, roomType);
 				const bookings = (await prisma.$queryRaw`
 				SELECT
-				(SELECT JSON_BUILD_OBJECT('roomId', "Booking"."roomId", 'number', "Room"."number", 'roomType', "Room"."roomType" )) AS "room",
+				(SELECT JSON_BUILD_OBJECT('roomId', "Room"."id", 'number', "Room"."number", 'roomType', "Room"."roomType", 'price', "Room"."price")) AS "room",
 				(SELECT JSON_BUILD_OBJECT('hotelId', "Hotel"."id", 'hotelName', "Hotel"."name")) AS "hotel",
 				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city"
 				FROM "Booking"
