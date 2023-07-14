@@ -8,6 +8,8 @@ import hotels_routes from 'src/api/hotels/hotels.routes';
 import bookings_routes from 'src/api/bookings/bookings.routes';
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //docs
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
