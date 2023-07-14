@@ -121,6 +121,22 @@ export const createSingleRoomBookingById = {
 				});
 			}
 
+			if (val.customerId && (val.name || val.email || val.address)) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: 'customerId OR name AND email AND address are required',
+					path: ['customerId', 'name', 'email', 'address']
+				});
+			}
+
+			if (!val.customerId && (!val.name || !val.email || !val.address)) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: 'customerId OR name AND email AND address are required',
+					path: ['customerId', 'name', 'email', 'address']
+				});
+			}
+
 			if (val.startDate && val.endDate && val.startDate > val.endDate) {
 				ctx.addIssue({
 					code: z.ZodIssueCode.custom,
