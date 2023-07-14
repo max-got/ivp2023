@@ -1,76 +1,14 @@
-import { Prisma, RoomType } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import prisma from 'src/prisma/';
 import { ResponseError } from 'src/utils/errorHandler';
-
-interface StartDateEndDate {
-	startDate: Date;
-	endDate: Date;
-}
-
-export type findManyCheckIfRoomsAreAvailableResult = findManyCheckIfRoomsAreAvailable[];
-
-export interface findManyCheckIfRoomsAreAvailable {
-	room: Room;
-	hotel: Hotel;
-	city: City;
-	isAvailable: boolean;
-}
-
-export interface Room {
-	roomId: number;
-	number: number;
-	roomType: string;
-}
-
-export interface Hotel {
-	hotelId: number;
-	hotelName: string;
-}
-
-export interface City {
-	cityId: number;
-	cityName: string;
-}
-
-interface FindUniqueCheckIfRoomByIdIsAvailableArgs extends StartDateEndDate {
-	id: number;
-}
-
-interface FindManyCheckIfRoomsByIdsAreAvailableArgs extends StartDateEndDate {
-	ids: number[];
-}
-
-interface FindManyCheckIfRoomsByRoomTypeAreAvailableArgs extends StartDateEndDate {
-	roomType: RoomType;
-}
-
-interface FindManyCheckIfRoomsByCityIdAreAvailableArgs extends StartDateEndDate {
-	cityId: number;
-}
-
-interface FindManyCheckIfRoomsByCityNameAreAvailableArgs extends StartDateEndDate {
-	cityName: string;
-}
-
-interface CreateBookingSingleRoomByIdArgsCustomerId extends StartDateEndDate {
-	roomId: number;
-	customerId: number;
-	name: undefined;
-	email: undefined;
-	address: undefined;
-}
-
-interface CreateBookingSingleRoomByIdArgsNewCustomer extends StartDateEndDate {
-	roomId: number;
-	customerId: undefined;
-	name: string;
-	email: string;
-	address: string;
-}
-
-type CreateBookingSingleRoomByIdArgs =
-	| CreateBookingSingleRoomByIdArgsNewCustomer
-	| CreateBookingSingleRoomByIdArgsCustomerId;
+import {
+	CreateBookingSingleRoomByIdArgs,
+	FindManyCheckIfRoomsByIdsAreAvailableArgs,
+	FindManyRoomsByCitynameThatAreAvailableArgs,
+	FindManyRoomsByRoomtypeThatAreAvailableArgs,
+	FindUniqueCheckIfRoomByIdIsAvailableArgs,
+	Result
+} from './bookings.types';
 
 export const extendedPrisma = prisma.$extends({
 	name: 'bookings',
@@ -81,22 +19,35 @@ export const extendedPrisma = prisma.$extends({
 				startDate,
 				endDate
 			}: FindUniqueCheckIfRoomByIdIsAvailableArgs) => {
-				const bookings = await prisma.booking.findUnique({
+				// Check if room exists
+				const room = await prisma.room.findUnique({
 					where: {
 						id
 					}
 				});
 
-				if (!bookings) {
-					return null;
+				if (!room) {
+					throw new ResponseError('Room not found', 404);
 				}
 
-				const isAvailable = bookings.startDate > endDate || bookings.endDate < startDate;
+				const bookings = (await prisma.$queryRaw`
+				SELECT
+				(SELECT JSON_BUILD_OBJECT('roomId', "Booking"."roomId", 'number', "Room"."number", 'roomType', "Room"."roomType" )) AS "room",
+				(SELECT JSON_BUILD_OBJECT('hotelId', "Hotel"."id", 'hotelName', "Hotel"."name")) AS "hotel",
+				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city"
+				FROM "Booking"
+				JOIN "Room" ON "Booking"."roomId" = "Room"."id"
+				JOIN "Hotel" ON "Room"."hotelId" = "Hotel"."id"
+				JOIN "City" ON "Hotel"."cityId" = "City"."id"
+				WHERE "Booking"."roomId" = ${id}
+				AND "Booking"."startDate" <= ${endDate} AND "Booking"."endDate" >= ${startDate}
+				`) as Record<string, string>[];
+				//if there is a booking, the room is not available
+				if (bookings.length > 0) {
+					throw new ResponseError('Room not available', 409);
+				}
 
-				return {
-					roomId: bookings.roomId,
-					isAvailable
-				};
+				return true;
 			},
 
 			findManyCheckIfRoomsByIdsAreAvailable: async ({
@@ -105,102 +56,90 @@ export const extendedPrisma = prisma.$extends({
 				endDate
 			}: FindManyCheckIfRoomsByIdsAreAvailableArgs) => {
 				//raw sql query, which returns the {roomId: number, isAvailable: boolean}[]
+				console.log(ids);
 				const bookings = (await prisma.$queryRaw`
 				SELECT
 				(SELECT JSON_BUILD_OBJECT('roomId', "Booking"."roomId", 'number', "Room"."number", 'roomType', "Room"."roomType" )) AS "room",
 				(SELECT JSON_BUILD_OBJECT('hotelId', "Hotel"."id", 'hotelName', "Hotel"."name")) AS "hotel",
-				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city",
-				CASE WHEN "Booking"."startDate" <= ${endDate} AND "Booking"."endDate" >= ${startDate} THEN false ELSE true END AS "isAvailable"
+				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city"
 				FROM "Booking"
 				JOIN "Room" ON "Booking"."roomId" = "Room"."id"
 				JOIN "Hotel" ON "Room"."hotelId" = "Hotel"."id"
 				JOIN "City" ON "Hotel"."cityId" = "City"."id"
-				WHERE "Booking"."roomId" IN (${Prisma.join(ids)})`) as findManyCheckIfRoomsAreAvailableResult;
+				WHERE "Booking"."roomId" IN (${Prisma.join(ids)})
+				AND "Booking"."startDate" <= ${endDate} AND "Booking"."endDate" >= ${startDate}
+				`) as Record<string, string>[];
 
-				if (bookings.length === 0) {
-					return [];
+				if (bookings.length > 0) {
+					throw new ResponseError('Rooms not available', 409);
 				}
 
-				return bookings;
+				return true;
 			},
 
-			findManyCheckIfRoomsByRoomTypeAreAvailable: async ({
+			findManyRoomsByRoomtypeThatAreAvailable: async ({
 				roomType,
 				startDate,
-				endDate
-			}: FindManyCheckIfRoomsByRoomTypeAreAvailableArgs) => {
-				console.log(roomType, startDate, endDate);
-				//raw sql query, which returns the {roomId: number, isAvailable: boolean}[]
+				endDate,
+				cityName,
+				hotelName
+			}: FindManyRoomsByRoomtypeThatAreAvailableArgs) => {
+				console.log(roomType, startDate, endDate, cityName, hotelName);
 				const bookings = (await prisma.$queryRaw`
 				SELECT
-				(SELECT JSON_BUILD_OBJECT('roomId', "Booking"."roomId", 'number', "Room"."number", 'roomType', "Room"."roomType" )) AS "room",
+				(SELECT JSON_BUILD_OBJECT('roomId', "Room"."id", 'number', "Room"."number", 'roomType', "Room"."roomType")) AS "room",
 				(SELECT JSON_BUILD_OBJECT('hotelId', "Hotel"."id", 'hotelName', "Hotel"."name")) AS "hotel",
-				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city",
-				CASE WHEN "Booking"."startDate" <= ${endDate} AND "Booking"."endDate" >= ${startDate} THEN false ELSE true END AS "isAvailable"
-				FROM "Booking"
-				JOIN "Room" ON "Booking"."roomId" = "Room"."id"
+				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name")) AS "city"
+				FROM "Room"
 				JOIN "Hotel" ON "Room"."hotelId" = "Hotel"."id"
 				JOIN "City" ON "Hotel"."cityId" = "City"."id"
-				WHERE "Room"."roomType"::text = ${roomType}::text`) as findManyCheckIfRoomsAreAvailableResult;
+				LEFT JOIN "Booking" ON "Booking"."roomId" = "Room"."id"
+				AND "Booking"."startDate" <= ${endDate}
+				AND "Booking"."endDate" >= ${startDate}
+				WHERE "Room"."roomType"::text = ${roomType}::text
+				${cityName ? Prisma.sql`AND "City"."name" = ${cityName}` : Prisma.empty}
+				${hotelName ? Prisma.sql`AND "Hotel"."name" = ${hotelName}` : Prisma.empty}
+				AND "Booking"."roomId" IS NULL
+				`) as Result[];
 
 				if (bookings.length === 0) {
-					return [];
+					throw new ResponseError('There are no rooms available', 409);
 				}
 
 				return bookings;
 			},
 
-			findManyCheckIfRoomsByCityIdAreAvailable: async ({
-				cityId,
-				startDate,
-				endDate
-			}: FindManyCheckIfRoomsByCityIdAreAvailableArgs) => {
-				//raw sql query, which returns the {roomId: number, isAvailable: boolean}[]
-				const bookings = (await prisma.$queryRaw`
-				SELECT
-				(SELECT JSON_BUILD_OBJECT('roomId', "Booking"."roomId", 'number', "Room"."number", 'roomType', "Room"."roomType" )) AS "room",
-				(SELECT JSON_BUILD_OBJECT('hotelId', "Hotel"."id", 'hotelName', "Hotel"."name")) AS "hotel",
-				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city",
-				CASE WHEN "Booking"."startDate" <= ${endDate} AND "Booking"."endDate" >= ${startDate} THEN false ELSE true END AS "isAvailable"
-				FROM "Booking"
-				JOIN "Room" ON "Booking"."roomId" = "Room"."id"
-				JOIN "Hotel" ON "Room"."hotelId" = "Hotel"."id"
-				JOIN "City" ON "Hotel"."cityId" = "City"."id"
-				WHERE "City"."id" = ${cityId}`) as findManyCheckIfRoomsAreAvailableResult;
-
-				if (bookings.length === 0) {
-					return [];
-				}
-
-				return bookings;
-			},
-
-			findManyCheckIfRoomsByCityNameAreAvailable: async ({
+			findManyRoomsByCitynameThatAreAvailable: async ({
 				cityName,
 				startDate,
-				endDate
-			}: FindManyCheckIfRoomsByCityNameAreAvailableArgs) => {
-				//raw sql query, which returns the {roomId: number, isAvailable: boolean}[]
+				endDate,
+				hotelName,
+				roomType
+			}: FindManyRoomsByCitynameThatAreAvailableArgs) => {
+				console.log(cityName, startDate, endDate, hotelName, roomType);
 				const bookings = (await prisma.$queryRaw`
 				SELECT
 				(SELECT JSON_BUILD_OBJECT('roomId', "Booking"."roomId", 'number', "Room"."number", 'roomType', "Room"."roomType" )) AS "room",
 				(SELECT JSON_BUILD_OBJECT('hotelId', "Hotel"."id", 'hotelName', "Hotel"."name")) AS "hotel",
-				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city",
-				CASE WHEN "Booking"."startDate" <= ${endDate} AND "Booking"."endDate" >= ${startDate} THEN false ELSE true END AS "isAvailable"
+				(SELECT JSON_BUILD_OBJECT('cityId', "City"."id", 'cityName', "City"."name" )) AS "city"
 				FROM "Booking"
 				JOIN "Room" ON "Booking"."roomId" = "Room"."id"
 				JOIN "Hotel" ON "Room"."hotelId" = "Hotel"."id"
 				JOIN "City" ON "Hotel"."cityId" = "City"."id"
-				WHERE "City"."name" = ${cityName}`) as findManyCheckIfRoomsAreAvailableResult;
+				WHERE "City"."name" = ${cityName}
+				${roomType ? Prisma.sql`AND "Room"."roomType"::text = ${roomType}::text` : Prisma.empty}
+				${hotelName ? Prisma.sql`AND "Hotel"."name" = ${hotelName}` : Prisma.empty}
+				AND ("Booking"."startDate" > ${endDate} OR "Booking"."endDate" < ${startDate});
+				`) as Result[];
 
 				if (bookings.length === 0) {
-					return [];
+					throw new ResponseError('There are no rooms available', 409);
 				}
 
 				return bookings;
 			},
 
-			createBookingSingleRoomById: async ({
+			createSingleRoomBookingById: async ({
 				endDate,
 				startDate,
 				roomId,

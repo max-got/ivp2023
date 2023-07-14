@@ -472,14 +472,16 @@
             "in": "query",
             "description": "Startdatum der Buchung (Date)",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "2021-01-01"
           },
           {
             "name": "endDate",
             "in": "query",
             "description": "Enddatum der Buchung (Date)",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "2021-02-01"
           }
         ],
         "responses": {
@@ -508,14 +510,16 @@
             "in": "query",
             "description": "Startdatum der Buchung (Date)",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "2021-01-01"
           },
           {
             "name": "endDate",
             "in": "query",
             "description": "Enddatum der Buchung (Date)",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "2021-02-01"
           }
         ],
         "responses": {
@@ -534,7 +538,7 @@
         "parameters": [
           {
             "name": "roomType",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string",
             "description": "Raumtyp"
@@ -544,49 +548,30 @@
             "in": "query",
             "description": "Startdatum der Buchung (Date)",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "2021-01-01"
           },
           {
             "name": "endDate",
             "in": "query",
             "description": "Enddatum der Buchung (Date)",
             "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/bookings/rooms/city/{cityId}": {
-      "get": {
-        "tags": [
-          "Bookings"
-        ],
-        "description": "Check if multiple Rooms by city id are available",
-        "parameters": [
-          {
-            "name": "cityId",
-            "in": "query",
-            "required": true,
-            "type": "integer",
-            "description": "ID der Stadt"
+            "type": "string",
+            "example": "2021-02-01"
           },
           {
-            "name": "startDate",
+            "name": "cityName",
             "in": "query",
-            "description": "Startdatum der Buchung (Date)",
-            "required": true,
-            "type": "string"
+            "description": "Name der Stadt",
+            "required": false,
+            "type": "string",
+            "example": "Berlin"
           },
           {
-            "name": "endDate",
+            "name": "hotelName",
             "in": "query",
-            "description": "Enddatum der Buchung (Date)",
-            "required": true,
+            "description": "Name des Hotels",
+            "required": false,
             "type": "string"
           }
         ],
@@ -606,24 +591,93 @@
         "parameters": [
           {
             "name": "cityName",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string",
             "description": "Name der Stadt"
+          },
+          {
+            "name": "roomType",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "hotelName",
+            "in": "query",
+            "type": "string"
           },
           {
             "name": "startDate",
             "in": "query",
             "description": "Startdatum der Buchung (Date)",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "2021-01-01"
           },
           {
             "name": "endDate",
             "in": "query",
             "description": "Enddatum der Buchung (Date)",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "2021-02-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/bookings/rooms/{roomId}": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "roomId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID des Raumes"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Objekt mit den Daten der Buchung",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "example": "2021-01-01T00:00:00.000Z"
+                },
+                "endDate": {
+                  "type": "string",
+                  "example": "2021-02-01T00:00:00.000Z"
+                },
+                "customerId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Max Mustermann"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "max@mustermann.de"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "Musterstraße 1, 12345 Musterstadt"
+                }
+              }
+            }
           }
         ],
         "responses": {

@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import type { ZodTypeAny } from 'zod';
+import type { z } from 'zod';
 import { processRequest } from 'zod-express-middleware';
+
+export type zodMiddlewareValidatorArgs = {
+	paramsSchema?: z.ZodTypeAny;
+	querySchema?: z.ZodTypeAny;
+	bodySchema?: z.ZodTypeAny;
+};
 
 type ParsingErrorResponse = {
 	body?: { fields: string; message: string }[];
@@ -8,15 +14,11 @@ type ParsingErrorResponse = {
 	params?: { fields: string; message: string }[];
 };
 
-export function zodMiddlewareValidator<
-	T extends ZodTypeAny,
-	K extends ZodTypeAny,
-	S extends ZodTypeAny
->({
+export function zodMiddlewareValidator({
 	bodySchema,
 	querySchema,
 	paramsSchema
-}: { bodySchema?: T; querySchema?: K; paramsSchema?: S } = {}) {
+}: zodMiddlewareValidatorArgs = {}) {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const parsing_errors: ParsingErrorResponse = {};
 
