@@ -4,6 +4,10 @@ on:
   pull_request:
     types:
       - opened
+  workflow_run:
+    workflows: ['Generate Swagger']
+    types:
+      - completed
 
 jobs:
   generate_swagger:
